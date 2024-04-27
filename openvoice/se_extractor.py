@@ -18,9 +18,10 @@ model_size = "medium"
 model = None
 def split_audio_whisper(audio_path, audio_name, target_dir='processed'):
     global model
-    if model is None:
-        #model = WhisperModel(model_size, device="cuda", compute_type="float16")
-        model = WhisperModel(model_size, device="cpu", compute_type="int8")
+    if model is None:        
+        device="cuda:0" if torch.cuda.is_available() else "cpu"
+        compute_type="float16" if torch.cuda.is_available() else "int8"
+        model = WhisperModel(model_size, device=device, compute_type=compute_type)
     audio = AudioSegment.from_file(audio_path)
     max_len = len(audio)
 
